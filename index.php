@@ -1,4 +1,4 @@
-<?php include(__DIR__.'/layouts/header.php') ?>
+<?php include(__DIR__.'/layouts/header.php'); ?>
 
 <div class="jumbotron text-center py-4">
     <h1>Home Page</h1>

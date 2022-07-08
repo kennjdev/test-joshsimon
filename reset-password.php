@@ -23,7 +23,7 @@ if (isset($_POST['submit'])) {
         }
 
         // Store the new password and delete the token from the database
-        $salt                = getenv('HASH_SALT');
+        $salt                = $GLOBALS['HASH_SALT'];
         $hashed_new_password = password_hash($password, PASSWORD_BCRYPT, ['salt', $salt]);
         $query               = $pdo->prepare('UPDATE users SET reset_token = NULL, password = ? WHERE username = ?');
         $query->execute([$hashed_new_password, $email]);
@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
     
                 Best wishes,
                 <br>
-                <span>" . getenv('APP_NAME') . "</span>";
+                <span>" . $GLOBALS['APP_NAME'] . "</span>";
         send_email($to, $subject, $body);
 
         // Display a success message to the user
@@ -60,7 +60,7 @@ if (isset($_POST['submit'])) {
         }
 
         // Check if the token has expired
-        $key  = getenv('HASH_SALT');
+        $key  = $GLOBALS['HASH_SALT'];
         $time = decrypt($reset_code, $key);
         if ($time <= strtotime('-1 hour')) {
             throw new Exception('Sorry, your link has expired!');
@@ -86,13 +86,13 @@ if (isset($_POST['submit'])) {
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger text-center">
                     <?= $error ?><br>
-                    Please <a href="/forgot-password">click here</a> to reset password again!
+                    Please <a href="/forgot-password.php">click here</a> to reset password again!
                 </div>
             <?php elseif (isset($message)): ?>
                 <div class="alert alert-success text-center">
                     <?= $message ?>
                     <br>
-                    Please <a href="/login">click here</a> to login!
+                    Please <a href="/login.php">click here</a> to login!
                 </div>
             <?php else: ?>
                 <?php if (isset($alert)): ?>
@@ -100,7 +100,7 @@ if (isset($_POST['submit'])) {
                         <?= $alert ?>
                     </div>
                 <?php endif ?>
-                <form action="/reset-password?<?= $_SERVER['QUERY_STRING'] ?>" method="POST">
+                <form action="/reset-password.php?<?= $_SERVER['QUERY_STRING'] ?>" method="POST">
                     <div class="form-group">
                         <label for="password">New Password:</label>
                         <input type="password" class="form-control" placeholder="Enter New Password" id="password"

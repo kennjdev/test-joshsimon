@@ -12,7 +12,7 @@ if (isset($_POST['submit'])) {
             throw new Exception('Please check the the captcha form.');
         }
         $captcha   = $_POST['g-recaptcha-response'];
-        $secretKey = getenv('CAPTCHA_SECRET_KEY');
+        $secretKey = $GLOBALS['CAPTCHA_SECRET_KEY'];
 
         $url          = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) . '&response=' . urlencode($captcha);
         $response     = file_get_contents($url);
@@ -33,13 +33,13 @@ if (isset($_POST['submit'])) {
         if ($row) {
             // Delete any existing reset token for the user
             // Create and store a new time-stamped reset token
-            $key         = getenv('HASH_SALT');
+            $key         = $GLOBALS['HASH_SALT'];
             $reset_token = encrypt(time(), $key);
             $query       = $pdo->prepare('UPDATE users SET reset_token = ? WHERE username = ?');
             $query->execute([$reset_token, $email]);
 
             // Email body
-            $link = getenv('APP_URL') . "/reset-password?email=$email&reset_code=".base64_encode($reset_token);
+            $link = $GLOBALS['APP_URL'] . "/reset-password.php?email=$email&reset_code=".base64_encode($reset_token);
             $body = "<p>Dear $email,</p>
                 
                 <p>Please click on this link to reset your password:</p> 
@@ -47,10 +47,7 @@ if (isset($_POST['submit'])) {
     
                 Best wishes,
                 <br>
-                <span>" . getenv('APP_NAME') . "</span>";
-
-            // Displayed a message to the user
-            $message = "If $email is associated with an account in our system, we have sent you a password reset link.";
+                <span>" . $GLOBALS['APP_NAME'] . "</span>";
         } // If account does not exists in our system, send an email stating that their account does not exist in our system
         else {
             // Email body
@@ -60,13 +57,16 @@ if (isset($_POST['submit'])) {
     
                 Best wishes,
                 <br>
-                <span>" . getenv('APP_NAME') . "</span>";
+                <span>" . $GLOBALS['APP_NAME'] . "</span>";
         }
 
         // Send an email to user
         $to      = $email;
         $subject = 'Reset Password';
         send_email($to, $subject, $body);
+
+        // Displayed a message to the user
+        $message = "If $email is associated with an account in our system, we have sent you a password reset link.";
     } catch (Exception $e) {
         // Displayed an error if exists to the user
         $error = $e->getMessage();
@@ -87,13 +87,13 @@ if (isset($_POST['submit'])) {
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger text-center"><?= $error ?></div>
             <?php endif ?>
-            <form action="/forgot-password" method="POST">
+            <form action="/forgot-password.php" method="POST">
                 <div class="form-group">
                     <label for="email">Email Address:</label>
                     <input type="email" class="form-control" placeholder="Enter Email Address" id="email" name="email"
                            value="<?= isset($email) ? $email : '' ?>">
                 </div>
-                <div class="g-recaptcha mb-3" data-sitekey="<?= getenv('CAPTCHA_SITE_KEY') ?>"></div>
+                <div class="g-recaptcha mb-3" data-sitekey="<?= $GLOBALS['CAPTCHA_SITE_KEY'] ?>"></div>
                 <button type="submit" name="submit" class="btn btn-primary">Reset Password</button>
             </form>
         </div>

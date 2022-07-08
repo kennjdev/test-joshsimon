@@ -1,11 +1,12 @@
 <?php
     ob_start();
     session_start();
+    require_once(__DIR__.'/../config.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title><?= getenv('APP_NAME') ?></title>
+    <title><?= $GLOBALS['APP_NAME'] ?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
@@ -16,7 +17,7 @@
 <body>
 <!-- Nav -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/"><?= getenv('APP_NAME') ?></a>
+    <a class="navbar-brand" href="/"><?= $GLOBALS['APP_NAME'] ?></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -25,10 +26,10 @@
             <a class="nav-item nav-link active" href="/">Home</a>
             <?php if(isset($_SESSION['user'])): ?>
                 <!--Displays a link to logout-->
-                <a class="nav-item nav-link" href="/logout">Logout</a>
+                <a class="nav-item nav-link" href="/logout.php">Logout</a>
             <?php else: ?>
                 <!--Displays a link to login-->
-                <a class="nav-item nav-link" href="/login">Login</a>
+                <a class="nav-item nav-link" href="/login.php">Login</a>
             <?php endif ?>
         </div>
     </div>

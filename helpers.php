@@ -18,10 +18,10 @@ if (!function_exists('send_email')) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
-        $mail->Username = getenv('MAIL_USERNAME');
-        $mail->Password = getenv('MAIL_PASSWORD');
+        $mail->Username = $GLOBALS['MAIL_USERNAME'];
+        $mail->Password = $GLOBALS['MAIL_PASSWORD'];
 
-        $mail->setFrom(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME'));
+        $mail->setFrom($GLOBALS['MAIL_FROM_ADDRESS'], $GLOBALS['MAIL_FROM_NAME']);
         $mail->addAddress($to);
 
         $mail->IsHTML(true);
